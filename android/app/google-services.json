@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "743437671618",
+    "project_id": "vaccikids",
+    "storage_bucket": "vaccikids.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:743437671618:android:587746ed1465b034c06f5b",
+        "android_client_info": {
+          "package_name": "com.example.vacci_kids"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "743437671618-v51i365ionc2nt68s0pp14791no150hu.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.vacci_kids",
+            "certificate_hash": "41ab43ce6e64c93b8d125cba664f3366a2aa7bfc"
+          }
+        },
+        {
+          "client_id": "743437671618-povlvp01b2sohn1uqoi20je6bj24hjkm.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDIUnzGlqqlLBKbF7j4dL1Yx5zonJADNHk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "743437671618-povlvp01b2sohn1uqoi20je6bj24hjkm.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
