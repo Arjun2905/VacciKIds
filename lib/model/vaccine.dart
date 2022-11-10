@@ -4,7 +4,7 @@ class Vaccine {
   String sr;
   final String dose;
   final String duration;
-  final String vfor;
+  final String usedFor;
   final String info;
   final String name;
 
@@ -12,7 +12,7 @@ class Vaccine {
     this.sr = '',
     required this.dose,
     required this.duration,
-    required this.vfor,
+    required this.usedFor,
     required this.info,
     required this.name,
   });
@@ -21,7 +21,7 @@ class Vaccine {
     'sr': sr,
     'dose': dose,
     'duration': duration,
-    'vfor': vfor,
+    'usedFor': usedFor,
     'info': info,
     'name': name,
   };
@@ -29,7 +29,7 @@ class Vaccine {
   static Vaccine fromJson(Map<String, dynamic> json) => Vaccine(
     dose: json['dose'], 
     duration: json['duration'], 
-    vfor: json['usedfor'], 
+    usedFor: json['usedFor'], 
     info: json['info'], 
     name: json['name']
     );

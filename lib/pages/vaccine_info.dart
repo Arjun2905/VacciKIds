@@ -1,3 +1,4 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 // import 'flutter/flutter_markdown.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -11,11 +12,15 @@ import 'package:practice1/model/vaccine.dart';
 //       snapshot.docs.map((doc) => Vaccine.fromJson(doc.data())).toList());
 
 Future<Vaccine?> readVaccine() async{
-  final docVacc = FirebaseFirestore.instance.collection('vaccines').doc('testvacc');
-  final snapshot = await docVacc.get();
-
-  if(snapshot.exists){
-    return Vaccine.fromJson(snapshot.data()!);
+  final snapshots = await FirebaseFirestore.instance.collection('vaccines').doc('b2765770-60c4-11ed-9460-5340af1462ae').get();
+  // print('object');
+  // print(await docVacc.get());
+  // final snapshot = await docVacc;
+  // print(snapshot.data());
+  // return snapshot;
+  if(snapshots.exists){
+    print(snapshots.data());
+    return Vaccine.fromJson(snapshots.data()!);
   }
 }
 
@@ -39,17 +44,17 @@ Future<Vaccine?> readVaccine() async{
       ),
 
 
-      Text('aka other_name1, other_name2', style: TextStyle(fontWeight: FontWeight.w500),)
+      // Text('aka other_name1, other_name2', style: TextStyle(fontWeight: FontWeight.w500),)
     ],
   ),
 );
 
 
 final testDuration = ["Example1", "Example2", "Example3", "Example100"];
-final Widget textSection = Container(
+Widget textSection(Vaccine vaccine) => Container(
   margin: const EdgeInsets.only(top: 20, bottom: 30),
     child: Column(
-      children: const [
+      children: [
         Padding(
           padding: EdgeInsets.only(bottom: 10.0),
           child: Text(
@@ -63,10 +68,11 @@ final Widget textSection = Container(
           padding: EdgeInsets.only(bottom: 15.0),
           child: Text.rich(
             TextSpan(
-                text: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. '
-                'Quis ultricies ipsum mattis elit vehicula vestibulum. '
-                'Egestas in tortor egestas sociis gravida habitasse. '
-                'Lectus scelerisque luctus elementum s elementums elementums elementums elementum',
+                // text: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. '
+                // 'Quis ultricies ipsum mattis elit vehicula vestibulum. '
+                // 'Egestas in tortor egestas sociis gravida habitasse. '
+                // 'Lectus scelerisque luctus elementum s elementums elementums elementums elementum',
+                text: vaccine.info,
               style: TextStyle(fontSize: 15)
             ),
           ),
@@ -86,10 +92,11 @@ final Widget textSection = Container(
           padding: EdgeInsets.only(bottom: 10.0),
           child: Text.rich(
             TextSpan(
-                text: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. '
-                    'Quis ultricies ipsum mattis elit vehicula vestibulum. '
-                    'Egestas in tortor egestas sociis gravida habitasse. '
-                    'Lectus scelerisque luctus elementum s elementums elementums elementums elementum',
+                // text: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. '
+                //     'Quis ultricies ipsum mattis elit vehicula vestibulum. '
+                //     'Egestas in tortor egestas sociis gravida habitasse. '
+                //     'Lectus scelerisque luctus elementum s elementums elementums elementums elementum',
+                text: vaccine.duration,
                 style: TextStyle(fontSize: 15)
             ),
           ),
@@ -98,10 +105,30 @@ final Widget textSection = Container(
         ),
 
 
+        // Padding(
+        //   padding: EdgeInsets.only(bottom: 10.0),
+        //   child: Text(
+        //     'Known Side Effects',
+        //     style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+        //     textAlign: TextAlign.left,
+        //   ),
+        // ),
+
+        // Padding(
+        //   padding: EdgeInsets.only(bottom: 10.0),
+        //   child: Text.rich(
+        //     TextSpan(
+        //         text: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. '
+        //             'Quis ultricies ipsum mattis elit vehicula vestibulum. ',
+        //         style: TextStyle(fontSize: 15)
+        //     ),
+        //   ),
+        // ),
+
         Padding(
           padding: EdgeInsets.only(bottom: 10.0),
           child: Text(
-            'Known Side Effects',
+            'Dose',
             style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
             textAlign: TextAlign.left,
           ),
@@ -111,8 +138,28 @@ final Widget textSection = Container(
           padding: EdgeInsets.only(bottom: 10.0),
           child: Text.rich(
             TextSpan(
-                text: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. '
-                    'Quis ultricies ipsum mattis elit vehicula vestibulum. ',
+                text: vaccine.dose,
+                style: TextStyle(fontSize: 15)
+            ),
+          ),
+        ),
+
+        Padding(
+          padding: EdgeInsets.only(bottom: 10.0),
+          child: Text(
+            'Used For',
+            style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+            textAlign: TextAlign.left,
+          ),
+        ),
+
+        Padding(
+          padding: EdgeInsets.only(bottom: 10.0),
+          child: Text.rich(
+            TextSpan(
+                // text: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. '
+                //     'Quis ultricies ipsum mattis elit vehicula vestibulum. ',
+                text: vaccine.usedFor,
                 style: TextStyle(fontSize: 15)
             ),
           ),
@@ -142,23 +189,31 @@ class _VaccineInfoState extends State<VaccineInfo> {
               // textSection,
               FutureBuilder<Vaccine?>(
                 future: readVaccine(),
-                builder: (context, snapshot) {
-                  print(snapshot);
-                  if(snapshot.hasData){
-                    final vaccine = snapshot.data;
+                builder: (context, AsyncSnapshot<Vaccine?> snapshots) {
+                  print("object");
+                  print(snapshots.hasData);
+                  if(snapshots.hasData){
+                    final vaccine = snapshots.data;
                     // print(vaccine.name.toString());
                     return vaccine == null
                            ? Center(child: Text('No User'),)
-                           : titleSection(vaccine);
+                           : Column(
+                              children: [
+                                titleSection(vaccine),
+                                textSection(vaccine),
+                              ],
+                           ); 
                   }
                   else{ 
                     // return Center(child: CircularProgressIndicator(),);
+                    print("HREHREHREHREHRHE");
                     return const Center(child: Text('sadsa'));
                   }
                   // return const Center(child: Text('sadsa'));
                 },
                 ),
-                textSection,
+                
+                // textSection,
             ],
           ),
       ),
