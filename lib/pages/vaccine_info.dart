@@ -143,6 +143,7 @@ class _VaccineInfoState extends State<VaccineInfo> {
               FutureBuilder<Vaccine?>(
                 future: readVaccine(),
                 builder: (context, snapshot) {
+                  print(snapshot);
                   if(snapshot.hasData){
                     final vaccine = snapshot.data;
                     // print(vaccine.name.toString());
@@ -150,10 +151,11 @@ class _VaccineInfoState extends State<VaccineInfo> {
                            ? Center(child: Text('No User'),)
                            : titleSection(vaccine);
                   }
-                  // else{
-                  //   return Center(child: CircularProgressIndicator(),);
-                  // }
-                  return const Center(child: Text('sadsa'));
+                  else{ 
+                    // return Center(child: CircularProgressIndicator(),);
+                    return const Center(child: Text('sadsa'));
+                  }
+                  // return const Center(child: Text('sadsa'));
                 },
                 ),
                 textSection,
