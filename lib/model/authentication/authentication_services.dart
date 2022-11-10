@@ -19,10 +19,10 @@ class AuthenticationServices {
   }
 
   static Future<User?> signUpUsingEmail({
-    required String firstName,
-    required String lastName,
+    required String name,
     required String email,
     required String password,
+    required String city,
   }) async {
     FirebaseAuth auth = FirebaseAuth.instance;
     User? user;
@@ -31,11 +31,14 @@ class AuthenticationServices {
           email: email, password: password);
       user = userCredential.user;
       await user!.sendEmailVerification();
-      await FireStoreServices().createUser(Users(
+      print(user.uid);
+      print("sending verification mail");
+      await FireStoreServices().createParentUser(Users(
           id: user.uid,
-          firstName: firstName,
-          lastName: lastName,
-          email: email));
+          name: name,
+          email: email,
+          city: city));
+      print("user added to database");
       user = auth.currentUser;
     } on FirebaseAuthException catch (e) {
       if (e.code == 'weak-password') {

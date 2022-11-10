@@ -1,22 +1,44 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:vacci_kids/model/User/user.dart';
+import 'package:vacci_kids/model/User/child_user.dart';
 
 class FireStoreServices {
-  final CollectionReference _usersCollectionReference =
-      FirebaseFirestore.instance.collection("users");
+  final CollectionReference _parentCollectionReference =
+      FirebaseFirestore.instance.collection("parent_profiles");
 
-  Future createUser(Users user) async {
+  Future createParentUser(Users user) async {
     try {
-      await _usersCollectionReference.doc(user.id).set({user.toJson()});
+      await _parentCollectionReference.doc(user.id).set({user.toJson()});
     } catch (e) {
       return e.toString();
     }
   }
 
-  Future<Object> getUser(String uid) async {
+  Future createChildUser(ChildUsers childUser, Users user) async {
+    final CollectionReference _childCollectionReference =
+    FirebaseFirestore.instance.collection("child_profiles").doc(user.id).collection("children");
     try {
-      var userData = await _usersCollectionReference.doc(uid).get();
+      await _childCollectionReference.doc().set({childUser.toJson()});
+    } catch (e) {
+      return e.toString();
+    }
+  }
+
+  Future<Object> getParentUser(String uid) async {
+    try {
+      var userData = await _parentCollectionReference.doc(uid).get();
       return Users.fromData(userData.data() as Map<String, dynamic>);
+    } catch (e) {
+      return e.toString();
+    }
+  }
+
+  Future<Object> getChildUser(String uid) async {
+    final CollectionReference _childCollectionReference =
+    FirebaseFirestore.instance.collection("child_profiles").doc(uid).collection("children");
+    try {
+      var userData = await _childCollectionReference.get();
+      return ChildUsers.fromData(userData as Map<String, dynamic>);
     } catch (e) {
       return e.toString();
     }
@@ -24,11 +46,9 @@ class FireStoreServices {
 
   Map<String, dynamic> convertToJson(Map<String, dynamic> data) {
     return {
-      'contestName': data['contestName'],
-      'site': data['site'],
-      'start': data['start'],
-      'time': data['time'],
-      'duration': data['duration'],
+      'Name': data['Name'],
+      'City': data['City'],
+      'Children': data['Children'],
     };
   }
 }
