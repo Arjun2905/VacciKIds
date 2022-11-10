@@ -1,19 +1,36 @@
 import 'package:flutter/material.dart';
 // import 'flutter/flutter_markdown.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:practice1/model/vaccine.dart';
 
 
-final Widget titleSection = Container(
+// Stream<List<Vaccine>> readUser() => FirebaseFirestore.instance
+//   .collection('vaccines')
+//   .snapshots()
+//   .map((snapshot) => 
+//       snapshot.docs.map((doc) => Vaccine.fromJson(doc.data())).toList());
+
+Future<Vaccine?> readVaccine() async{
+  final docVacc = FirebaseFirestore.instance.collection('vaccines').doc('testvacc');
+  final snapshot = await docVacc.get();
+
+  if(snapshot.exists){
+    return Vaccine.fromJson(snapshot.data()!);
+  }
+}
+
+ Widget titleSection(Vaccine vaccine) =>  Container(
   padding: const EdgeInsets.all(50),
   // margin: const EdgeInsets.only(top:0),
   height: 220.0,
   color: Colors.grey[400],
   child: Column(
-    children: const [
+    children: [
       Center(
         child: Padding(
           padding: EdgeInsets.only(bottom: 10.0, top: 20.0),
           child: Text(
-            ' Vaccine Name ',
+            vaccine.name,
             softWrap: true,
             style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
           ),
@@ -104,10 +121,14 @@ final Widget textSection = Container(
     ),
 );
 
-class VaccineInfo extends StatelessWidget {
+class VaccineInfo extends StatefulWidget {
   const VaccineInfo({Key? key}) : super(key: key);
 
+  @override
+  State<VaccineInfo> createState() => _VaccineInfoState();
+}
 
+class _VaccineInfoState extends State<VaccineInfo> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -117,8 +138,25 @@ class VaccineInfo extends StatelessWidget {
         // appBar: AppBar(),
           body: Column(
             children: [
-              titleSection,
-              textSection,
+              // titleSection(vaccine),
+              // textSection,
+              FutureBuilder<Vaccine?>(
+                future: readVaccine(),
+                builder: (context, snapshot) {
+                  if(snapshot.hasData){
+                    final vaccine = snapshot.data;
+                    // print(vaccine.name.toString());
+                    return vaccine == null
+                           ? Center(child: Text('No User'),)
+                           : titleSection(vaccine);
+                  }
+                  // else{
+                  //   return Center(child: CircularProgressIndicator(),);
+                  // }
+                  return const Center(Text('sadsa'));
+                },
+                ),
+                textSection,
             ],
           ),
       ),

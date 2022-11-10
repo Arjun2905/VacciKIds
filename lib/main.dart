@@ -1,8 +1,19 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:practice1/model/vaccine.dart';
 import 'package:practice1/pages/home_page.dart';
 import 'package:practice1/pages/vaccine_info.dart';
 
-void main() {
+// void main() {
+//   runApp(MyApp());
+// }
+
+// Firebase congig:
+Future main() async{
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
+
   runApp(MyApp());
 }
 
