@@ -153,7 +153,7 @@ class _VaccineInfoState extends State<VaccineInfo> {
                   // else{
                   //   return Center(child: CircularProgressIndicator(),);
                   // }
-                  return const Center(Text('sadsa'));
+                  return const Center(child: Text('sadsa'));
                 },
                 ),
                 textSection,
