@@ -31,14 +31,16 @@ class MyCard extends State<ChildCard>{
             Image.asset("assets/images/asset_1.png",
               height: MediaQuery.of(context).size.height*0.20,
               width: MediaQuery.of(context).size.width,
-              fit: BoxFit.cover,
+              fit: BoxFit.contain,
             ),
-            Column(
+            Padding(
+              child : Column(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
                 SizedBox(height: MediaQuery.of(context).size.height*0.15,),
                 Text(widget.name),
                 Text(widget.age.toString())]
+            ), padding: const EdgeInsets.only(right: 10.0)
             ),
           ],
         ),

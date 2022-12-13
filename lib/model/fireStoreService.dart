@@ -8,7 +8,7 @@ class FireStoreServices {
 
   Future createParentUser(Users user) async {
     try {
-      await _parentCollectionReference.doc(user.id).set({user.toJson()});
+      await _parentCollectionReference.doc(user.id).set(user.toJson());
     } catch (e) {
       return e.toString();
     }
@@ -18,7 +18,7 @@ class FireStoreServices {
     final CollectionReference _childCollectionReference =
     FirebaseFirestore.instance.collection("child_profiles").doc(user.id).collection("children");
     try {
-      await _childCollectionReference.doc().set({childUser.toJson()});
+      await _childCollectionReference.add(childUser.toJson());
     } catch (e) {
       return e.toString();
     }

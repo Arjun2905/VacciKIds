@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
 import 'package:vacci_kids/view/widgets/child_cards.dart';
+import 'package:vacci_kids/view/screens/parent_profile.dart';
+import 'package:vacci_kids/view/screens/child_register.dart';
 
 class HomeScreen extends StatefulWidget{
   const HomeScreen({Key? key}) : super(key: key);
@@ -12,6 +14,16 @@ class HomeScreen extends StatefulWidget{
 class MyHomeScreen extends State<HomeScreen>{
   int _selectedIndex = 0;
 
+  Widget bodySection = SingleChildScrollView(
+    padding: const EdgeInsets.fromLTRB(10, 35, 10, 0),
+    child: Column(
+      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      mainAxisSize: MainAxisSize.max,
+      children: const [
+        ChildCard(name : 'Jay', age: 1),
+      ],
+    ),
+  );
 
   Widget buildNavigationBar() {
     return GNav(
@@ -19,7 +31,7 @@ class MyHomeScreen extends State<HomeScreen>{
       padding: const EdgeInsets.all(18),
       tabMargin: const EdgeInsets.fromLTRB(5, 0, 2, 5),
       gap: 5,
-      tabs: const [
+      tabs: [
         GButton(
           icon: Icons.home_outlined,
           text: "Home",
@@ -27,6 +39,20 @@ class MyHomeScreen extends State<HomeScreen>{
           curve: Curves.easeOut,
           iconColor: Colors.black,
           iconActiveColor: Colors.indigo,
+          onPressed: (){
+            setState(() {
+              bodySection = SingleChildScrollView(
+                padding: const EdgeInsets.fromLTRB(10, 35, 10, 0),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  mainAxisSize: MainAxisSize.max,
+                  children: const [
+                    ChildCard(name : 'Jay', age: 1),
+                  ],
+                ),
+              );
+            });
+          },
         ),
         GButton(
           icon: Icons.account_circle_outlined,
@@ -34,6 +60,11 @@ class MyHomeScreen extends State<HomeScreen>{
           curve: Curves.easeOut,
           iconColor: Colors.black,
           iconActiveColor: Colors.indigo,
+          onPressed: (){
+            setState(() {
+              bodySection = const ParentProfile();
+            });
+          },
         )
       ],
       activeColor: Colors.indigoAccent,
@@ -53,23 +84,13 @@ class MyHomeScreen extends State<HomeScreen>{
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           setState(() {
-
+            Navigator.push(context, MaterialPageRoute(builder: (context)=>const ChildPage()));
           });
         },
         child: const Icon(Icons.add),
       ),
       bottomNavigationBar: buildNavigationBar(),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.fromLTRB(10, 35, 10, 0),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          mainAxisSize: MainAxisSize.max,
-          children: const [
-            ChildCard(name: 'Arjun', age: 21),
-            ChildCard(name : 'Kalash', age: 20),
-          ],
-        ),
-      ),
+      body: bodySection,
     );
   }
 }

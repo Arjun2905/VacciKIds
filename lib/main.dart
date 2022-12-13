@@ -39,7 +39,6 @@ class VacciKids extends State<MyApp>{
 
   @override
   void dispose() {
-    user.cancel();
     super.dispose();
   }
 

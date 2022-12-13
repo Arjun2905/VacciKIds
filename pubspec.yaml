@@ -35,6 +35,8 @@ dependencies:
   cloud_firestore: ^4.0.3
   firebase_database: ^10.0.3
   google_nav_bar: ^5.0.6
+  intl: ^0.17.0
+  dropdown_button2: ^1.8.5
 
 
   # The following adds the Cupertino Icons font to your application.
@@ -64,8 +66,14 @@ flutter:
   uses-material-design: true
   assets:
     - assets/images/asset_1.png
+    - assets/images/asset_11.png
+    - assets/images/asset_2.png
+    - assets/images/asset_12.png
     - assets/images/asset_3.png
+    - assets/images/asset_4.png
+    - assets/images/child_img.png
     - assets/images/googleIcon.png
+    - assets/images/parent_img.png
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.
