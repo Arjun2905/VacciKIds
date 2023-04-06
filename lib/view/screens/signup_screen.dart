@@ -20,13 +20,12 @@ class MyRegisterState extends State<MyRegister> {
   final TextEditingController confirmPasswordController =
   TextEditingController();
   final TextEditingController nameController = TextEditingController();
-  final TextEditingController cityController = TextEditingController();
 
   String email = "";
   String password = "";
   String confirmPassword = "";
   String name = "";
-  String city = "";
+  List<String> childIds = [];
 
   Widget _signupUi() {
     return Column(
@@ -118,35 +117,35 @@ class MyRegisterState extends State<MyRegister> {
           height: 10,
         ),
 
-        TextFormField(
-          controller: cityController,
-          style: const TextStyle(color: Colors.black),
-          onSaved: (value){
-            city = value!;
-          },
-          decoration: InputDecoration(
-              enabledBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(10),
-                borderSide: const BorderSide(
-                  color: Colors.black,
-                ),
-              ),
-              focusedBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(10),
-                borderSide: const BorderSide(
-                  color: Colors.black,
-                ),
-              ),
-              hintText: "City",
-              hintStyle: const TextStyle(color: Colors.grey),
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(10),
-              )
-          ),
-        ),
-        const SizedBox(
-          height: 10,
-        ),
+        // TextFormField(
+        //   controller: cityController,
+        //   style: const TextStyle(color: Colors.black),
+        //   onSaved: (value){
+        //     city = value!;
+        //   },
+        //   decoration: InputDecoration(
+        //       enabledBorder: OutlineInputBorder(
+        //         borderRadius: BorderRadius.circular(10),
+        //         borderSide: const BorderSide(
+        //           color: Colors.black,
+        //         ),
+        //       ),
+        //       focusedBorder: OutlineInputBorder(
+        //         borderRadius: BorderRadius.circular(10),
+        //         borderSide: const BorderSide(
+        //           color: Colors.black,
+        //         ),
+        //       ),
+        //       hintText: "City",
+        //       hintStyle: const TextStyle(color: Colors.grey),
+        //       border: OutlineInputBorder(
+        //         borderRadius: BorderRadius.circular(10),
+        //       )
+        //   ),
+        // ),
+        // const SizedBox(
+        //   height: 10,
+        // ),
 
         TextFormField(
           controller: passwordController,
@@ -252,7 +251,7 @@ class MyRegisterState extends State<MyRegister> {
                     name: nameController.text,
                     email: emailController.text,
                     password: passwordController.text,
-                    city : cityController.text
+                    childIds : childIds
                 );
                 if (user != null) {
                   Navigator.of(context).pushReplacement(MaterialPageRoute(

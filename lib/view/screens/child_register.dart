@@ -52,38 +52,38 @@ class _ChildPageState extends State<ChildPage> {
                       vertical: 16.0, horizontal: 32.0),
                   child: Column(
                     children: [
-                      TextFormField(
-                        decoration: const InputDecoration(
-                          icon: Icon(Icons.account_box),
-                          hintText: "Enter id",
-                          labelText: "ID",
-                        ),
-                        validator: (value) {
-                          if (value!.isEmpty) {
-                            return "ID cannot be empty";
-                          }
-                          return null;
-                        },
-                        onChanged: (value) {
-                          setState(() {});
-                        },
-                      ),
-                      TextFormField(
-                        decoration: const InputDecoration(
-                          icon: Icon(Icons.badge),
-                          hintText: "Enter parent id",
-                          labelText: "Parent ID",
-                        ),
-                        validator: (value) {
-                          if (value!.isEmpty) {
-                            return "Parent ID cannot be empty";
-                          }
-                          return null;
-                        },
-                        onChanged: (value) {
-                          setState(() {});
-                        },
-                      ),
+                      // TextFormField(
+                      //   decoration: const InputDecoration(
+                      //     icon: Icon(Icons.account_box),
+                      //     hintText: "Enter id",
+                      //     labelText: "ID",
+                      //   ),
+                      //   validator: (value) {
+                      //     if (value!.isEmpty) {
+                      //       return "ID cannot be empty";
+                      //     }
+                      //     return null;
+                      //   },
+                      //   onChanged: (value) {
+                      //     setState(() {});
+                      //   },
+                      // ),
+                      // TextFormField(
+                      //   decoration: const InputDecoration(
+                      //     icon: Icon(Icons.badge),
+                      //     hintText: "Enter parent id",
+                      //     labelText: "Parent ID",
+                      //   ),
+                      //   validator: (value) {
+                      //     if (value!.isEmpty) {
+                      //       return "Parent ID cannot be empty";
+                      //     }
+                      //     return null;
+                      //   },
+                      //   onChanged: (value) {
+                      //     setState(() {});
+                      //   },
+                      // ),
                       TextFormField(
                         decoration: const InputDecoration(
                           icon: Icon(Icons.child_care_sharp),
@@ -108,16 +108,16 @@ class _ChildPageState extends State<ChildPage> {
                           labelText: "Date of birth",
                         ),
                         onTap: () async {
-                          DateTime? pickeddate = await showDatePicker(
+                          DateTime? pickDate = await showDatePicker(
                               context: context,
                               initialDate: DateTime.now(),
                               firstDate: DateTime(1990),
                               lastDate: DateTime.now());
 
-                          if (pickeddate != null) {
+                          if (pickDate != null) {
                             setState(() {
                               _date.text =
-                                  DateFormat('dd-MM-yyyy').format(pickeddate);
+                                  DateFormat('dd-MM-yyyy').format(pickDate);
                             });
                           }
                         },

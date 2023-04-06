@@ -2,15 +2,15 @@ class Users {
   final String id;
   final String name;
   final String email;
-  final String city;
+  final List<String> childIds;
   String childCount = '0';
-  Users({required this.city, required this.id, required this.name, required this.email});
+  Users({required this.childIds, required this.id, required this.name, required this.email});
 
   Users.fromData(Map<String,dynamic> data)
     : id = data['id'],
       name = data['name'],
       email = data['email'],
-      city = data['city'],
+      childIds = data['childIds'],
       childCount = data['childCount'];
 
   Map<String,dynamic> toJson(){
@@ -18,8 +18,8 @@ class Users {
       'id' : id,
       'name' : name,
       'email' : email,
-      'city' : city,
-      'childCount' : childCount
+      'childIds' : childIds,
+      'childCount' : childIds.length
     };
   }
 }

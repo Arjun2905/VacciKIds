@@ -16,7 +16,7 @@ class FireStoreServices {
 
   Future createChildUser(ChildUsers childUser, Users user) async {
     final CollectionReference _childCollectionReference =
-    FirebaseFirestore.instance.collection("child_profiles").doc(user.id).collection("children");
+    FirebaseFirestore.instance.collection("child_profiles");
     try {
       await _childCollectionReference.add(childUser.toJson());
     } catch (e) {
@@ -24,7 +24,7 @@ class FireStoreServices {
     }
   }
 
-  Future<Object> getParentUser(String uid) async {
+  Future<Object> getParentUser(String? uid) async {
     try {
       var userData = await _parentCollectionReference.doc(uid).get();
       return Users.fromData(userData.data() as Map<String, dynamic>);
@@ -33,7 +33,7 @@ class FireStoreServices {
     }
   }
 
-  Future<Object> getChildUser(String uid) async {
+  Future<Object> getChildUser(String? uid) async {
     final CollectionReference _childCollectionReference =
     FirebaseFirestore.instance.collection("child_profiles").doc(uid).collection("children");
     try {

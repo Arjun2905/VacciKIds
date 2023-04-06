@@ -22,7 +22,7 @@ class AuthenticationServices {
     required String name,
     required String email,
     required String password,
-    required String city,
+    required List<String> childIds,
   }) async {
     FirebaseAuth auth = FirebaseAuth.instance;
     User? user;
@@ -37,7 +37,7 @@ class AuthenticationServices {
           id: user.uid,
           name: name,
           email: email,
-          city: city));
+          childIds: childIds));
       print("user added to database");
       user = auth.currentUser;
     } on FirebaseAuthException catch (e) {

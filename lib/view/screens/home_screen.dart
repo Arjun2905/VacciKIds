@@ -1,5 +1,7 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
+import 'package:vacci_kids/model/fireStoreService.dart';
 import 'package:vacci_kids/view/widgets/child_cards.dart';
 import 'package:vacci_kids/view/screens/parent_profile.dart';
 import 'package:vacci_kids/view/screens/child_register.dart';
@@ -13,7 +15,9 @@ class HomeScreen extends StatefulWidget{
 
 class MyHomeScreen extends State<HomeScreen>{
   int _selectedIndex = 0;
-
+  static User? myUser = FirebaseAuth.instance.currentUser;
+  static String? uid = myUser?.uid;
+  Future<Object> data = FireStoreServices().getParentUser(uid);
   Widget bodySection = SingleChildScrollView(
     padding: const EdgeInsets.fromLTRB(10, 35, 10, 0),
     child: Column(
