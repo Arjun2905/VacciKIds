@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
@@ -7,27 +8,44 @@ import 'package:vacci_kids/view/screens/parent_profile.dart';
 import 'package:vacci_kids/view/screens/child_register.dart';
 
 class HomeScreen extends StatefulWidget{
-  const HomeScreen({Key? key}) : super(key: key);
+  final String uid;
+  const HomeScreen({Key? key, required this.uid}) : super(key: key);
 
   @override
   State<StatefulWidget> createState() => MyHomeScreen();
 }
 
 class MyHomeScreen extends State<HomeScreen>{
+  Map<String, dynamic> data = {};
+  late List<String> childIds;
   int _selectedIndex = 0;
-  static User? myUser = FirebaseAuth.instance.currentUser;
-  static String? uid = myUser?.uid;
-  Future<Object> data = FireStoreServices().getParentUser(uid);
-  Widget bodySection = SingleChildScrollView(
-    padding: const EdgeInsets.fromLTRB(10, 35, 10, 0),
-    child: Column(
-      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-      mainAxisSize: MainAxisSize.max,
-      children: const [
-        ChildCard(name : 'Jay', age: 1),
-      ],
-    ),
-  );
+
+  Future<void> getUserData(String uid) async {
+    var document = await FirebaseFirestore.instance.collection('parent_profiles').doc(uid).get();
+    // setState(() {
+      print('Inside set-state');
+      data = document.data()!;
+      print(data);
+    // });
+  }
+
+  Widget getParticularSection(int index){
+    getUserData(widget.uid);
+    print('Info of Data : ' + data.toString());
+    if(index==0){
+      print(data['id']);
+      return bodySection();
+    }else{
+      return const ParentProfile();
+    }
+  }
+
+  Widget bodySection() {
+    return SingleChildScrollView(
+      padding: const EdgeInsets.fromLTRB(10, 35, 10, 0),
+      child: Column(),
+    );
+  }
 
   Widget buildNavigationBar() {
     return GNav(
@@ -45,16 +63,7 @@ class MyHomeScreen extends State<HomeScreen>{
           iconActiveColor: Colors.indigo,
           onPressed: (){
             setState(() {
-              bodySection = SingleChildScrollView(
-                padding: const EdgeInsets.fromLTRB(10, 35, 10, 0),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  mainAxisSize: MainAxisSize.max,
-                  children: const [
-                    ChildCard(name : 'Jay', age: 1),
-                  ],
-                ),
-              );
+              getParticularSection(_selectedIndex);
             });
           },
         ),
@@ -66,7 +75,7 @@ class MyHomeScreen extends State<HomeScreen>{
           iconActiveColor: Colors.indigo,
           onPressed: (){
             setState(() {
-              bodySection = const ParentProfile();
+              getParticularSection(_selectedIndex);
             });
           },
         )
@@ -94,7 +103,7 @@ class MyHomeScreen extends State<HomeScreen>{
         child: const Icon(Icons.add),
       ),
       bottomNavigationBar: buildNavigationBar(),
-      body: bodySection,
+      body: getParticularSection(_selectedIndex),
     );
   }
 }

@@ -7,7 +7,6 @@ import 'package:vacci_kids/view/screens/login_screen.dart';
 
 class MyRegister extends StatefulWidget {
   const MyRegister({Key? key}) : super(key: key);
-  static String routeName = 'signup-page';
 
   @override
   State<MyRegister> createState() => MyRegisterState();
@@ -117,36 +116,6 @@ class MyRegisterState extends State<MyRegister> {
           height: 10,
         ),
 
-        // TextFormField(
-        //   controller: cityController,
-        //   style: const TextStyle(color: Colors.black),
-        //   onSaved: (value){
-        //     city = value!;
-        //   },
-        //   decoration: InputDecoration(
-        //       enabledBorder: OutlineInputBorder(
-        //         borderRadius: BorderRadius.circular(10),
-        //         borderSide: const BorderSide(
-        //           color: Colors.black,
-        //         ),
-        //       ),
-        //       focusedBorder: OutlineInputBorder(
-        //         borderRadius: BorderRadius.circular(10),
-        //         borderSide: const BorderSide(
-        //           color: Colors.black,
-        //         ),
-        //       ),
-        //       hintText: "City",
-        //       hintStyle: const TextStyle(color: Colors.grey),
-        //       border: OutlineInputBorder(
-        //         borderRadius: BorderRadius.circular(10),
-        //       )
-        //   ),
-        // ),
-        // const SizedBox(
-        //   height: 10,
-        // ),
-
         TextFormField(
           controller: passwordController,
           validator: (value)=>Validator.validatePassword(password: value),
@@ -255,7 +224,7 @@ class MyRegisterState extends State<MyRegister> {
                 );
                 if (user != null) {
                   Navigator.of(context).pushReplacement(MaterialPageRoute(
-                      builder: (context) => const HomeScreen()));
+                      builder: (context) => HomeScreen(uid: user.uid,)));
                 }
               }
             },
@@ -300,7 +269,7 @@ class MyRegisterState extends State<MyRegister> {
           onTap: () async {
             await AuthenticationServices.signInWithGoogle();
             Navigator.of(context).pushReplacement(MaterialPageRoute(
-                builder: (context) => const HomeScreen()));
+                builder: (context) => HomeScreen(uid: FirebaseAuth.instance.currentUser!.uid,)));
           },
           child: Ink(
             color: Colors.transparent,

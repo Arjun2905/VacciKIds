@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:vacci_kids/view/screens/vaccine_schedule.dart';
 class ChildCard extends StatefulWidget{
   const ChildCard({Key? key, required this.name, required this.age}) : super(key: key);
-  final String name;
-  final int age;
+  final String? name;
+  final String? age;
   @override
   State<StatefulWidget> createState() => MyCard();
 }
@@ -38,7 +38,7 @@ class MyCard extends State<ChildCard>{
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
                 SizedBox(height: MediaQuery.of(context).size.height*0.15,),
-                Text(widget.name),
+                Text(widget.name.toString()),
                 Text(widget.age.toString())]
             ), padding: const EdgeInsets.only(right: 10.0)
             ),

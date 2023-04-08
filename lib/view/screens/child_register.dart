@@ -1,6 +1,11 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:dropdown_button2/dropdown_button2.dart';
+import 'package:vacci_kids/model/User/child_user.dart';
+import 'package:vacci_kids/model/fireStoreService.dart';
+import 'package:vacci_kids/view/screens/home_screen.dart';
 
 class ChildPage extends StatefulWidget {
   const ChildPage({Key? key}) : super(key: key);
@@ -11,18 +16,45 @@ class ChildPage extends StatefulWidget {
 
 class _ChildPageState extends State<ChildPage> {
   final _formKey = GlobalKey<FormState>();
-  final TextEditingController _date = TextEditingController();
+  final TextEditingController nameController = TextEditingController();
+  final TextEditingController dateController = TextEditingController();
 
   final List<String> genderItems = [
     'Male',
     'Female',
   ];
   String? gender;
+  String? userid;
+
+  Future<String?> addData() async {
+    var collection = FirebaseFirestore.instance.collection('child_profiles');
+    var docRef = await collection.add({
+      'Name': nameController.text,
+      'DOB' : dateController.text,
+      'Gender' : gender,
+      'Track' : "0"
+    });
+    userid = docRef.id;
+    print("in add data function : " + userid.toString());
+    return userid;
+  }
 
   moveToHome(BuildContext context) async {
     if (_formKey.currentState!.validate()) {
-      // await Future.delayed(Duration(seconds: 1));
-      // await Navigator.pushNamed(context, MyRoutes.childProfileRoute);
+      var userid = await addData();
+      User? parentUser = FirebaseAuth.instance.currentUser;
+      var document = await FirebaseFirestore.instance.collection('parent_profiles').doc(parentUser?.uid).get();
+      print("Child user : " + userid.toString());
+      Map<String, dynamic> data = document.data() as Map<String, dynamic>;
+      List<dynamic> list = [];
+      // int count = data['childCount'] as int;
+      // count = count + 1;
+      if(data['childIds']!=null){
+        list = data['childIds'];
+      }
+      list.add(userid);
+      await FirebaseFirestore.instance.collection('parent_profiles').doc(parentUser?.uid).update({'childIds' : list});
+      Navigator.pop(context);
     }
   }
 
@@ -52,39 +84,8 @@ class _ChildPageState extends State<ChildPage> {
                       vertical: 16.0, horizontal: 32.0),
                   child: Column(
                     children: [
-                      // TextFormField(
-                      //   decoration: const InputDecoration(
-                      //     icon: Icon(Icons.account_box),
-                      //     hintText: "Enter id",
-                      //     labelText: "ID",
-                      //   ),
-                      //   validator: (value) {
-                      //     if (value!.isEmpty) {
-                      //       return "ID cannot be empty";
-                      //     }
-                      //     return null;
-                      //   },
-                      //   onChanged: (value) {
-                      //     setState(() {});
-                      //   },
-                      // ),
-                      // TextFormField(
-                      //   decoration: const InputDecoration(
-                      //     icon: Icon(Icons.badge),
-                      //     hintText: "Enter parent id",
-                      //     labelText: "Parent ID",
-                      //   ),
-                      //   validator: (value) {
-                      //     if (value!.isEmpty) {
-                      //       return "Parent ID cannot be empty";
-                      //     }
-                      //     return null;
-                      //   },
-                      //   onChanged: (value) {
-                      //     setState(() {});
-                      //   },
-                      // ),
                       TextFormField(
+                        controller: nameController,
                         decoration: const InputDecoration(
                           icon: Icon(Icons.child_care_sharp),
                           hintText: "Enter name",
@@ -101,7 +102,7 @@ class _ChildPageState extends State<ChildPage> {
                         },
                       ),
                       TextFormField(
-                        controller: _date,
+                        controller: dateController,
                         decoration: const InputDecoration(
                           icon: Icon(Icons.calendar_today_rounded),
                           hintText: "Enter date of birth",
@@ -116,7 +117,7 @@ class _ChildPageState extends State<ChildPage> {
 
                           if (pickDate != null) {
                             setState(() {
-                              _date.text =
+                              dateController.text =
                                   DateFormat('dd-MM-yyyy').format(pickDate);
                             });
                           }
@@ -170,8 +171,7 @@ class _ChildPageState extends State<ChildPage> {
                           fontSize: 14,
                         ),
                       ),
-                    ))
-                        .toList(),
+                    )).toList(),
                     validator: (value) {
                       if (value == null) {
                         return 'Please select gender';
@@ -182,7 +182,8 @@ class _ChildPageState extends State<ChildPage> {
                       //Do something when changing the item if you want.
                     },
                     onSaved: (value) {
-                      gender = value.toString();
+                      gender = value as String?;
+                      print(gender);
                     },
                   ),
                 ),
@@ -194,7 +195,7 @@ class _ChildPageState extends State<ChildPage> {
                   onPressed: () {
                     moveToHome(context);
                   },
-                  child: const Text("Next"),
+                  child: const Text('Next'),
                 )
               ]),
         ),
