@@ -3,3 +3,7 @@ build/
 .idea/
 .dart_tool/
 test/
+temp.dart.txt
+.flutter-plugins-dependencies
+temp.dart
+v1.zip

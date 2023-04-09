@@ -4,16 +4,41 @@ import 'package:google_nav_bar/google_nav_bar.dart';
 import 'package:vacci_kids/view/widgets/vaccine_cards.dart';
 import 'package:vacci_kids/view/screens/parent_profile.dart';
 
-class VaccineScheduleScreen extends StatefulWidget{
-  const VaccineScheduleScreen({Key? key}) : super(key: key);
+class VaccineScheduleScreen extends StatefulWidget {
+  final String childId;
+  const VaccineScheduleScreen({Key? key, required this.childId})
+      : super(key: key);
 
   @override
   State<StatefulWidget> createState() => MyVaccineScheduleScreen();
 }
 
-class MyVaccineScheduleScreen extends State<VaccineScheduleScreen>{
+class MyVaccineScheduleScreen extends State<VaccineScheduleScreen> {
   int _selectedIndex = 0;
+  int? trackNo;
   final database = FirebaseFirestore.instance.collection('vaccines');
+
+  @override
+  void initState() {
+    super.initState();
+    _getChildProfile();
+  }
+
+  Future<void> _getChildProfile() async {
+    try {
+      print("\n\n\n\nRECEIVED CHILD ID  " + widget.childId);
+      final snapshot = await FirebaseFirestore.instance
+          .collection('child_profiles')
+          .doc(widget.childId)
+          .get();
+      final trackNo = int.parse(snapshot.get("Track"));
+      setState(() {
+        this.trackNo = trackNo;
+      });
+    } catch (e) {
+      print('Error getting child profile: $e');
+    }
+  }
 
   Widget buildNavigationBar() {
     return GNav(
@@ -52,7 +77,7 @@ class MyVaccineScheduleScreen extends State<VaccineScheduleScreen>{
   Widget futureWidgets() {
     return StreamBuilder<QuerySnapshot>(
         stream: database.snapshots(),
-        builder: (context,AsyncSnapshot<QuerySnapshot> snapshot) {
+        builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
           if (!snapshot.hasData) {
             return const Center(
               child: CircularProgressIndicator(),
@@ -62,16 +87,17 @@ class MyVaccineScheduleScreen extends State<VaccineScheduleScreen>{
                 itemCount: snapshot.data!.docs.length,
                 itemBuilder: (context, index) {
                   final DocumentSnapshot documentSnapshot =
-                  snapshot.data!.docs[index];
+                      snapshot.data!.docs[index];
                   return VaccineCard(
                       name: documentSnapshot['name'],
                       info: documentSnapshot['info'],
                       vacc_for: documentSnapshot['usedFor'],
                       duration: documentSnapshot['duration'],
                       dose: documentSnapshot['dose'],
+                      lastVaccineSerialNumber: this.trackNo as int,
+                      childId: widget.childId,
                       sr: documentSnapshot['sr']);
-                }
-            );
+                });
           }
         });
   }
@@ -80,7 +106,7 @@ class MyVaccineScheduleScreen extends State<VaccineScheduleScreen>{
   Widget build(BuildContext context) {
     return Scaffold(
       bottomNavigationBar: buildNavigationBar(),
-      body: (_selectedIndex==0)?futureWidgets():const ParentProfile(),
+      body: (_selectedIndex == 0) ? futureWidgets() : const ParentProfile(),
     );
   }
 }
