@@ -7,7 +7,7 @@ import 'package:vacci_kids/view/widgets/child_cards.dart';
 import 'package:vacci_kids/view/screens/parent_profile.dart';
 import 'package:vacci_kids/view/screens/child_register.dart';
 
-class HomeScreen extends StatefulWidget{
+class HomeScreen extends StatefulWidget {
   final String uid;
   const HomeScreen({Key? key, required this.uid}) : super(key: key);
 
@@ -15,27 +15,30 @@ class HomeScreen extends StatefulWidget{
   State<StatefulWidget> createState() => MyHomeScreen();
 }
 
-class MyHomeScreen extends State<HomeScreen>{
+class MyHomeScreen extends State<HomeScreen> {
   Map<String, dynamic> data = {};
   late List<String> childIds;
   int _selectedIndex = 0;
 
   Future<void> getUserData(String uid) async {
-    var document = await FirebaseFirestore.instance.collection('parent_profiles').doc(uid).get();
+    var document = await FirebaseFirestore.instance
+        .collection('parent_profiles')
+        .doc(uid)
+        .get();
     // setState(() {
-      print('Inside set-state');
-      data = document.data()!;
-      print(data);
+    print('Inside set-state');
+    data = document.data()!;
+    print(data);
     // });
   }
 
-  Widget getParticularSection(int index){
+  Widget getParticularSection(int index) {
     getUserData(widget.uid);
     print('Info of Data : ' + data.toString());
-    if(index==0){
+    if (index == 0) {
       print(data['id']);
       return bodySection();
-    }else{
+    } else {
       return const ParentProfile();
     }
   }
@@ -61,7 +64,7 @@ class MyHomeScreen extends State<HomeScreen>{
           curve: Curves.easeOut,
           iconColor: Colors.black,
           iconActiveColor: Colors.indigo,
-          onPressed: (){
+          onPressed: () {
             setState(() {
               getParticularSection(_selectedIndex);
             });
@@ -73,7 +76,7 @@ class MyHomeScreen extends State<HomeScreen>{
           curve: Curves.easeOut,
           iconColor: Colors.black,
           iconActiveColor: Colors.indigo,
-          onPressed: (){
+          onPressed: () {
             setState(() {
               getParticularSection(_selectedIndex);
             });
@@ -97,7 +100,8 @@ class MyHomeScreen extends State<HomeScreen>{
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           setState(() {
-            Navigator.push(context, MaterialPageRoute(builder: (context)=>const ChildPage()));
+            Navigator.push(context,
+                MaterialPageRoute(builder: (context) => const ChildPage()));
           });
         },
         child: const Icon(Icons.add),
