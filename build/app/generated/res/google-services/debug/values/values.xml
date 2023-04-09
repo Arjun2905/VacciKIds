@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="default_web_client_id" translatable="false">743437671618-povlvp01b2sohn1uqoi20je6bj24hjkm.apps.googleusercontent.com</string>
+    <string name="gcm_defaultSenderId" translatable="false">743437671618</string>
+    <string name="google_api_key" translatable="false">AIzaSyDIUnzGlqqlLBKbF7j4dL1Yx5zonJADNHk</string>
+    <string name="google_app_id" translatable="false">1:743437671618:android:587746ed1465b034c06f5b</string>
+    <string name="google_crash_reporting_api_key" translatable="false">AIzaSyDIUnzGlqqlLBKbF7j4dL1Yx5zonJADNHk</string>
+    <string name="google_storage_bucket" translatable="false">vaccikids.appspot.com</string>
+    <string name="project_id" translatable="false">vaccikids</string>
+</resources>
