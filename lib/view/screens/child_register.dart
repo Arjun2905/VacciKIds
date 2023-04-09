@@ -3,9 +3,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:dropdown_button2/dropdown_button2.dart';
-import 'package:vacci_kids/model/User/child_user.dart';
-import 'package:vacci_kids/model/fireStoreService.dart';
-import 'package:vacci_kids/view/screens/home_screen.dart';
 
 class ChildPage extends StatefulWidget {
   const ChildPage({Key? key}) : super(key: key);
@@ -23,10 +20,10 @@ class _ChildPageState extends State<ChildPage> {
     'Male',
     'Female',
   ];
-  String? gender;
-  String? userid;
+  String gender = "";
 
   Future<String?> addData() async {
+    String? userid;
     var collection = FirebaseFirestore.instance.collection('child_profiles');
     var docRef = await collection.add({
       'Name': nameController.text,
@@ -35,7 +32,6 @@ class _ChildPageState extends State<ChildPage> {
       'Track' : "0"
     });
     userid = docRef.id;
-    print("in add data function : " + userid.toString());
     return userid;
   }
 
@@ -44,16 +40,13 @@ class _ChildPageState extends State<ChildPage> {
       var userid = await addData();
       User? parentUser = FirebaseAuth.instance.currentUser;
       var document = await FirebaseFirestore.instance.collection('parent_profiles').doc(parentUser?.uid).get();
-      print("Child user : " + userid.toString());
       Map<String, dynamic> data = document.data() as Map<String, dynamic>;
       List<dynamic> list = [];
-      // int count = data['childCount'] as int;
-      // count = count + 1;
       if(data['childIds']!=null){
         list = data['childIds'];
       }
       list.add(userid);
-      await FirebaseFirestore.instance.collection('parent_profiles').doc(parentUser?.uid).update({'childIds' : list});
+      await FirebaseFirestore.instance.collection('parent_profiles').doc(parentUser?.uid).update({'childIds' : list, 'childCount' : list.length});
       Navigator.pop(context);
     }
   }
@@ -132,10 +125,6 @@ class _ChildPageState extends State<ChildPage> {
                           setState(() {});
                         },
                       ),
-                      // SizedBox(
-                      //   height: 40.0,
-                      // ),
-                      // )
                     ],
                   ),
                 ),
@@ -179,12 +168,12 @@ class _ChildPageState extends State<ChildPage> {
                       return null;
                     },
                     onChanged: (value) {
-                      //Do something when changing the item if you want.
+                      gender = (value as String?)!;
                     },
-                    onSaved: (value) {
-                      gender = value as String?;
-                      print(gender);
-                    },
+                    // onSaved: (value) {
+                    //   gender = (value as String?)!;
+                    //   print("Gender of child is : " + gender);
+                    // },
                   ),
                 ),
                 const SizedBox(

@@ -17,19 +17,42 @@ class HomeScreen extends StatefulWidget{
 
 class MyHomeScreen extends State<HomeScreen>{
   Map<String, dynamic> data = {};
-  late List<String> childIds;
+  List<dynamic> childIds = [];
   int _selectedIndex = 0;
 
   Future<void> getUserData(String uid) async {
     var document = await FirebaseFirestore.instance.collection('parent_profiles').doc(uid).get();
-    // setState(() {
-      print('Inside set-state');
-      data = document.data()!;
-      print(data);
-    // });
+    data = document.data()!;
+    childIds = data['childIds'];
+    print("Child ids are : " + childIds.toString());
+  }
+
+  Future<Widget> getAllChildCards() async {
+    List<dynamic> list = [];
+    print(childIds[0]);
+    for(int i=0;i<childIds.length;i++){
+      var temp = await FirebaseFirestore.instance.collection('child_profiles').doc(childIds[i]).get();
+      print("Data of temp : " + temp.data().toString());
+      // print("List objects are : " + temp['Name']);
+    }
+    // return Column();
+    return ListView.builder(
+        itemCount: list.length,
+        itemBuilder: (context, index){
+          return ChildCard(
+              name: list[index].name,
+              age: list[index].age);
+        }
+    );
   }
 
   Widget getParticularSection(int index){
+    // List<dynamic> list = [];
+    // print(childIds[0]);
+    // for(int i=0;i<childIds.length;i++){
+    //   list.add(FirebaseFirestore.instance.collection('child_profiles').doc(childIds[i]).get());
+    //   print("List objects are : " + list.toString());
+    // }
     getUserData(widget.uid);
     print('Info of Data : ' + data.toString());
     if(index==0){
@@ -41,11 +64,44 @@ class MyHomeScreen extends State<HomeScreen>{
   }
 
   Widget bodySection() {
-    return SingleChildScrollView(
-      padding: const EdgeInsets.fromLTRB(10, 35, 10, 0),
-      child: Column(),
-    );
-  }
+    String? childName = "";
+    String? childAge = "";
+    List<dynamic> childIds = [];
+    return StreamBuilder<DocumentSnapshot>(
+        stream: FirebaseFirestore.instance
+        .collection('parent_profiles')
+        .doc(widget.uid)
+        .snapshots(),
+        builder: (context, snapshot) {
+        if (snapshot.hasData && snapshot.data != null) {
+          childIds = snapshot.data?['childIds'];
+        }
+          return ListView.builder(
+              itemCount: childIds.length,
+              itemBuilder: (context, index) {
+                String childId = childIds[index];
+                return StreamBuilder<DocumentSnapshot>(
+                    stream: FirebaseFirestore.instance
+                        .collection('child_profiles')
+                        .doc(childId)
+                        .snapshots(),
+                    builder: (context, snapshot) {
+                      if (snapshot.hasData && snapshot.data != null) {
+                        childName = snapshot.data?['Name'];
+                        childAge = snapshot.data?['DOB'];
+                        print("Name : " + childName.toString() + " Age : " + childAge.toString());
+                      }
+                      return ChildCard(
+                          name: childName,
+                          age: childAge
+                      );
+                    }
+                );
+              }
+          );
+        }
+      );
+    }
 
   Widget buildNavigationBar() {
     return GNav(
