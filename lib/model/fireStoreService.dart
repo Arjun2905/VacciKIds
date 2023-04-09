@@ -1,0 +1,53 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:vacci_kids/model/User/user.dart';
+import 'package:vacci_kids/model/User/child_user.dart';
+
+class FireStoreServices {
+  final CollectionReference _parentCollectionReference =
+      FirebaseFirestore.instance.collection("parent_profiles");
+
+  final CollectionReference _childCollectionReference =
+  FirebaseFirestore.instance.collection("child_profiles");
+
+  Future createParentUser(Users user) async {
+    try {
+      await _parentCollectionReference.doc(user.id).set(user.toJson());
+    } catch (e) {
+      return e.toString();
+    }
+  }
+
+  Future createChildUser(ChildUsers childUser) async {
+    try {
+      await _childCollectionReference.add(childUser.toJson()).then((value) => value.id);
+    } catch (e) {
+      return e.toString();
+    }
+  }
+
+  Future<Object> getParentUser(String? uid) async {
+    try {
+      var userData = await _parentCollectionReference.doc(uid).get();
+      return Users.fromData(userData.data() as Map<String, dynamic>);
+    } catch (e) {
+      return e.toString();
+    }
+  }
+
+  Future<Object> getChildUser(String? uid) async {
+    try {
+      var userData = await _childCollectionReference.get();
+      return ChildUsers.fromData(userData as Map<String, dynamic>);
+    } catch (e) {
+      return e.toString();
+    }
+  }
+
+  Map<String, dynamic> convertToJson(Map<String, dynamic> data) {
+    return {
+      'Name': data['Name'],
+      'City': data['City'],
+      'Children': data['Children'],
+    };
+  }
+}
