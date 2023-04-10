@@ -33,9 +33,8 @@ class MyHomeScreen extends State<HomeScreen>{
     for(int i=0;i<childIds.length;i++){
       var temp = await FirebaseFirestore.instance.collection('child_profiles').doc(childIds[i]).get();
       print("Data of temp : " + temp.data().toString());
-      // print("List objects are : " + temp['Name']);
     }
-    // return Column();
+
     return ListView.builder(
         itemCount: list.length,
         itemBuilder: (context, index){
@@ -47,12 +46,6 @@ class MyHomeScreen extends State<HomeScreen>{
   }
 
   Widget getParticularSection(int index){
-    // List<dynamic> list = [];
-    // print(childIds[0]);
-    // for(int i=0;i<childIds.length;i++){
-    //   list.add(FirebaseFirestore.instance.collection('child_profiles').doc(childIds[i]).get());
-    //   print("List objects are : " + list.toString());
-    // }
     getUserData(widget.uid);
     print('Info of Data : ' + data.toString());
     if(index==0){

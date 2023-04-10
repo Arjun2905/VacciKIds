@@ -1,13 +1,23 @@
 import 'package:flutter/material.dart';
+import 'package:vacci_kids/model/notification/notificationService.dart';
 
-class VaccineInfo extends StatelessWidget {
+class VaccineInfo extends StatefulWidget {
   final String name;
   final String vaccFor;
   final String duration;
   final String dose;
   final String info;
+
   const VaccineInfo({Key? key, required this.name, required this.vaccFor,
-    required this.duration, required this.dose, required this.info}) : super(key: key);
+    required this.duration, required this.dose, required this.info})
+      : super(key: key);
+
+  @override
+  State<StatefulWidget> createState() => MyVaccineInfo();
+}
+
+class MyVaccineInfo extends State<VaccineInfo>{
+  bool toNotify = false;
 
   @override
   Widget build(BuildContext context) {
@@ -38,7 +48,7 @@ class VaccineInfo extends StatelessWidget {
         Center(
           child: Padding(
             padding: const EdgeInsets.only(bottom: 5.0),
-            child: Text(name,
+            child: Text(widget.name,
               textAlign: TextAlign.justify,
               softWrap: true,
               style: const TextStyle(
@@ -57,6 +67,35 @@ class VaccineInfo extends StatelessWidget {
     margin: const EdgeInsets.only(top: 20, bottom: 30),
     child: Column(
       children: [
+        Padding(
+        padding: const EdgeInsets.only(top: 15.0,bottom: 10.0),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: [
+            SizedBox(
+              width: MediaQuery.of(context).size.width*0.50,
+              height: MediaQuery.of(context).size.height*0.05,
+            ),
+            const Text(
+              "Notify me ",
+              style: TextStyle(fontWeight: FontWeight.w500, height: 2.2),
+              textAlign: TextAlign.center,
+            ),
+            Switch(
+                activeColor: Colors.blue,
+                activeTrackColor: Colors.blue,
+                value: toNotify,
+                onChanged: (value){
+                  setState(() {
+                    NotificationService().instantNotification();
+                    toNotify = value;
+                  });
+                },
+            )
+          ],
+        )),
+
         const Padding(
           padding: EdgeInsets.only(top: 15.0,bottom: 10.0),
           child: Text(
@@ -70,7 +109,7 @@ class VaccineInfo extends StatelessWidget {
           padding: const EdgeInsets.only(top: 10.0,right: 10.0,left: 10.0,bottom: 10.0),
           child: Text.rich(
             TextSpan(
-                text: info,
+                text: widget.info,
                 style: const TextStyle(fontSize: 16),
             ),
             textAlign: TextAlign.justify,
@@ -91,34 +130,12 @@ class VaccineInfo extends StatelessWidget {
           padding: const EdgeInsets.only(top: 10.0,right: 10.0,left: 10.0,bottom: 10.0),
           child: Text.rich(
             TextSpan(
-                text: duration,
+                text: widget.duration,
                 style: const TextStyle(fontSize: 16)
             ),
             textAlign: TextAlign.justify,
           ),
         ),
-
-
-        // const Padding(
-        //   padding: EdgeInsets.only(right: 10.0,left: 10.0,bottom: 10.0),
-        //   child: Text(
-        //     'Known Side Effects',
-        //     style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-        //     textAlign: TextAlign.left,
-        //   ),
-        // ),
-        //
-        // const Padding(
-        //   padding: EdgeInsets.only(right: 10.0,left: 10.0,bottom: 10.0),
-        //   child: Text.rich(
-        //     TextSpan(
-        //         text: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. '
-        //             'Quis ultricies ipsum mattis elit vehicula vestibulum. ',
-        //         style: TextStyle(fontSize: 16)
-        //     ),
-        //     textAlign: TextAlign.justify,
-        //   ),
-        // ),
       ],
     ),
   );
