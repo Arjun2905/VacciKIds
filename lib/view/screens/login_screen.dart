@@ -101,7 +101,7 @@ class MyLoginState extends State<MyLogin> {
               password: passwordController.text);
               if (user != null) {
                 Navigator.of(context).pushReplacement(MaterialPageRoute(
-                builder: (context) => const HomeScreen()));
+                builder: (context) => HomeScreen(uid: user.uid)));
               }
             }},
           style: ElevatedButton.styleFrom(
@@ -194,7 +194,7 @@ class MyLoginState extends State<MyLogin> {
           onTap: () async {
             await AuthenticationServices.signInWithGoogle();
             Navigator.of(context).pushReplacement(MaterialPageRoute(
-                builder: (context) => const HomeScreen()));
+                builder: (context) => HomeScreen(uid: FirebaseAuth.instance.currentUser!.uid,)));
           },
           child: Ink(
             color: Colors.transparent,

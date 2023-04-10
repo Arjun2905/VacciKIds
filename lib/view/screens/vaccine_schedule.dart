@@ -65,7 +65,7 @@ class MyVaccineScheduleScreen extends State<VaccineScheduleScreen>{
                   snapshot.data!.docs[index];
                   return VaccineCard(
                       name: documentSnapshot['name'],
-                      info: documentSnapshot['info'] ,
+                      info: documentSnapshot['info'],
                       vacc_for: documentSnapshot['usedFor'],
                       duration: documentSnapshot['duration'],
                       dose: documentSnapshot['dose'],

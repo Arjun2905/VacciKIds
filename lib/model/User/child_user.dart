@@ -1,13 +1,13 @@
 class ChildUsers {
-  final String id;
+  // final String id;
   final String name;
   final String dob;
   final String track;
-  ChildUsers({required this.id, required this.name, required this.dob, required this.track});
+  ChildUsers({required this.name, required this.dob, required this.track});
 
   ChildUsers.fromData(Map<String,dynamic> data)
-      : id = data['id'],
-        name = data['Name'],
+      // : id = data['id'],
+      :  name = data['Name'],
         dob = data['DOB'],
         track = data['track'];
 

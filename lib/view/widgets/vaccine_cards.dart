@@ -37,6 +37,7 @@ class MyCard extends State<VaccineCard>{
 
   @override
   Widget build(BuildContext context) {
+    bool? isChecked = false;
     return GestureDetector(
       onTap: (){
         setState(() {
@@ -94,6 +95,14 @@ class MyCard extends State<VaccineCard>{
                 //       },)
                 //     ]
                 // ),
+                Checkbox(
+                    value: isChecked,
+                    activeColor: Colors.blue,
+                    onChanged: (newBool) {
+                      setState(() {
+                        isChecked = newBool;
+                      });
+                })
               ],
             ),
           ]
