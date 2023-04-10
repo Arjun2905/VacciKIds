@@ -1,29 +1,36 @@
 import 'package:flutter/material.dart';
 import 'package:vacci_kids/view/screens/vaccine_info.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class VaccineCard extends StatefulWidget {
   final String name;
   final String info;
-  final String vaccFor;
+  final String vacc_for;
   final String duration;
   final String dose;
   final String sr;
+  final int lastVaccineSerialNumber;
+  final String childId;
   bool isActive;
-  VaccineCard(
-      {Key? key,
-        required this.name,
-        required this.info,
-        required this.vaccFor,
-        required this.duration,
-        required this.dose,
-        required this.sr,
-        this.isActive = false})
-      : super(key: key);
+
+  VaccineCard({
+    Key? key,
+    required this.name,
+    required this.info,
+    required this.vacc_for,
+    required this.duration,
+    required this.dose,
+    required this.sr,
+    required this.lastVaccineSerialNumber,
+    required this.childId,
+    this.isActive = false,
+  }) : super(key: key);
+
   @override
-  State<StatefulWidget> createState() => MyCard();
+  State<StatefulWidget> createState() => _VaccineCardState();
 }
 
-class MyCard extends State<VaccineCard> {
+class _VaccineCardState extends State<VaccineCard> {
   String getName(String name) {
     if (name.length > 6) {
       return name.substring(0, 6) + '...';
@@ -46,27 +53,46 @@ class MyCard extends State<VaccineCard> {
   }
 
   Color getBackgroundColor() {
-    return widget.isActive ? Colors.green[100]! : Colors.yellow[100]!;
+    return widget.isActive
+        ? Color.fromARGB(255, 144, 252, 148)
+        : Color.fromARGB(255, 201, 235, 255);
   }
 
   Color getTextColor() {
-    return widget.isActive ? Colors.green[900]! : Colors.black;
+    return widget.isActive
+        ? Color.fromARGB(255, 1, 58, 5)
+        : Color.fromARGB(255, 24, 23, 23);
   }
+
+  bool get isLocked =>
+      int.parse(widget.sr) > widget.lastVaccineSerialNumber + 1 ||
+      int.parse(widget.sr) <= widget.lastVaccineSerialNumber;
+
+  bool get shouldBeActive =>
+      int.parse(widget.sr) <= widget.lastVaccineSerialNumber;
 
   @override
   Widget build(BuildContext context) {
+    print("sr no and locked status " +
+        this.isLocked.toString() +
+        " " +
+        widget.sr);
+
     return GestureDetector(
         onTap: () {
           setState(() {
             Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (context) => VaccineInfo(
-                        name: widget.name,
-                        vaccFor: widget.vaccFor,
-                        duration: getDuration(widget.duration),
-                        dose: widget.dose,
-                        info: widget.info)));
+              context,
+              MaterialPageRoute(
+                builder: (context) => VaccineInfo(
+                  name: widget.name,
+                  vaccFor: widget.vacc_for,
+                  duration: getDuration(widget.duration),
+                  dose: widget.dose,
+                  info: widget.info,
+                ),
+              ),
+            );
             print("Vaccine Added");
           });
         },
@@ -74,46 +100,74 @@ class MyCard extends State<VaccineCard> {
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(20),
           ),
-          color: getBackgroundColor(),
+          color: isLocked
+              ? Color.fromARGB(244, 234, 233, 235)
+              : getBackgroundColor(),
           child: Stack(
               alignment: AlignmentDirectional.topStart,
               fit: StackFit.passthrough,
               children: <Widget>[
                 // Image.asset(
-                //     "assets/images/asset_2.png",
-                //     height: MediaQuery.of(context).size.height * 0.10,
-                //     width: MediaQuery.of(context).size.width,
-                //     fit: BoxFit.cover,
+                //   "assets/images/asset_2.png",
+                //   height: MediaQuery.of(context).size.height * 0.10,
+                //   width: MediaQuery.of(context).size.width,
+                //   fit: BoxFit.cover,
                 // ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Checkbox(
-                      value: widget.isActive,
-                      onChanged: (value) {
-                        setState(() {
-                          widget.isActive = value!;
-                        });
-                      },
+                      value: shouldBeActive ? true : widget.isActive,
+                      onChanged: isLocked
+                          ? null
+                          : (value) async {
+                              setState(() {
+                                print(widget.isActive.toString() +
+                                    value.toString());
+                                widget.isActive = value!;
+                              });
+                              try {
+                                final fDoc = FirebaseFirestore.instance
+                                    .collection('child_profiles')
+                                    .doc(widget.childId);
+
+                                String updateSrNo;
+                                if (value!) {
+                                  updateSrNo = widget.sr;
+                                } else {
+                                  int prevSr = int.parse(widget.sr) - 1;
+                                  updateSrNo = prevSr.toString();
+                                }
+                                await fDoc.update({'Track': updateSrNo});
+                              } catch (error) {
+                                print('Failed to update Track: $error');
+                              }
+                            },
                     ),
                     Expanded(
-                      child: Padding(padding: const EdgeInsets.all(5),
-                        child : Column(
+                      child: Column(
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text(widget.sr + "/49",
-                              style: TextStyle(color: getTextColor())),
-                          Text('Name     : ' + getName(widget.name),
-                              style: TextStyle(color: getTextColor())),
-                          Text('Dose     : ' + widget.dose,
-                              style: TextStyle(color: getTextColor())),
-                          Text('Duration : ' + getDuration(widget.duration),
-                              style: TextStyle(color: getTextColor())),
+                          Text(
+                            widget.sr + "/49",
+                            style: TextStyle(color: getTextColor()),
+                          ),
+                          Text(
+                            'Name     : ' + getName(widget.name),
+                            style: TextStyle(color: getTextColor()),
+                          ),
+                          Text(
+                            'Dose     : ' + widget.dose,
+                            style: TextStyle(color: getTextColor()),
+                          ),
+                          Text(
+                            'Duration : ' + getDuration(widget.duration),
+                            style: TextStyle(color: getTextColor()),
+                          ),
                         ],
                       ),
                     ),
-                    )
                   ],
                 ),
               ]),

@@ -1,21 +1,29 @@
 import 'package:flutter/material.dart';
 import 'package:vacci_kids/view/screens/vaccine_schedule.dart';
-class ChildCard extends StatefulWidget{
-  const ChildCard({Key? key, required this.name, required this.age}) : super(key: key);
+
+class ChildCard extends StatefulWidget {
+  final String childId;
+  const ChildCard(
+      {Key? key, required this.name, required this.age, required this.childId})
+      : super(key: key);
   final String? name;
   final String? age;
   @override
   State<StatefulWidget> createState() => MyCard();
 }
 
-class MyCard extends State<ChildCard>{
-
+class MyCard extends State<ChildCard> {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: (){
+      onTap: () {
         setState(() {
-          Navigator.push(context, MaterialPageRoute(builder: (context)=> const VaccineScheduleScreen()));
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => VaccineScheduleScreen(
+                        childId: widget.childId,
+                      )));
         });
       },
       child: Card(
@@ -28,20 +36,23 @@ class MyCard extends State<ChildCard>{
           alignment: AlignmentDirectional.topEnd,
           fit: StackFit.passthrough,
           children: <Widget>[
-            Image.asset("assets/images/asset_1.png",
-              height: MediaQuery.of(context).size.height*0.20,
+            Image.asset(
+              "assets/images/asset_1.png",
+              height: MediaQuery.of(context).size.height * 0.20,
               width: MediaQuery.of(context).size.width,
               fit: BoxFit.contain,
             ),
             Padding(
-              child : Column(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: [
-                SizedBox(height: MediaQuery.of(context).size.height*0.15,),
-                Text(widget.name.toString()),
-                Text(widget.age.toString())]
-            ), padding: const EdgeInsets.only(right: 10.0)
-            ),
+                child: Column(
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    children: [
+                      SizedBox(
+                        height: MediaQuery.of(context).size.height * 0.15,
+                      ),
+                      Text(widget.name.toString()),
+                      Text(widget.age.toString())
+                    ]),
+                padding: const EdgeInsets.only(right: 10.0)),
           ],
         ),
       ),

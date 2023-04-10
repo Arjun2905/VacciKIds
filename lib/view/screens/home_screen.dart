@@ -7,7 +7,7 @@ import 'package:vacci_kids/view/widgets/child_cards.dart';
 import 'package:vacci_kids/view/screens/parent_profile.dart';
 import 'package:vacci_kids/view/screens/child_register.dart';
 
-class HomeScreen extends StatefulWidget{
+class HomeScreen extends StatefulWidget {
   final String uid;
   const HomeScreen({Key? key, required this.uid}) : super(key: key);
 
@@ -15,13 +15,16 @@ class HomeScreen extends StatefulWidget{
   State<StatefulWidget> createState() => MyHomeScreen();
 }
 
-class MyHomeScreen extends State<HomeScreen>{
+class MyHomeScreen extends State<HomeScreen> {
   Map<String, dynamic> data = {};
   List<dynamic> childIds = [];
   int _selectedIndex = 0;
 
   Future<void> getUserData(String uid) async {
-    var document = await FirebaseFirestore.instance.collection('parent_profiles').doc(uid).get();
+    var document = await FirebaseFirestore.instance
+        .collection('parent_profiles')
+        .doc(uid)
+        .get();
     data = document.data()!;
     childIds = data['childIds'];
     print("Child ids are : " + childIds.toString());
@@ -29,29 +32,40 @@ class MyHomeScreen extends State<HomeScreen>{
 
   Future<Widget> getAllChildCards() async {
     List<dynamic> list = [];
-    print(childIds[0]);
-    for(int i=0;i<childIds.length;i++){
-      var temp = await FirebaseFirestore.instance.collection('child_profiles').doc(childIds[i]).get();
+    // print(childIds[0]);
+    for (int i = 0; i < childIds.length; i++) {
+      var temp = await FirebaseFirestore.instance
+          .collection('child_profiles')
+          .doc(childIds[i])
+          .get();
       print("Data of temp : " + temp.data().toString());
+      // print("List objects are : " + temp['Name']);
     }
-
+    // return Column();
     return ListView.builder(
         itemCount: list.length,
-        itemBuilder: (context, index){
+        itemBuilder: (context, index) {
           return ChildCard(
-              name: list[index].name,
-              age: list[index].age);
-        }
-    );
+            name: list[index].name,
+            age: list[index].age,
+            childId: list[index].id,
+          );
+        });
   }
 
-  Widget getParticularSection(int index){
+  Widget getParticularSection(int index) {
+    // List<dynamic> list = [];
+    // print(childIds[0]);
+    // for(int i=0;i<childIds.length;i++){
+    //   list.add(FirebaseFirestore.instance.collection('child_profiles').doc(childIds[i]).get());
+    //   print("List objects are : " + list.toString());
+    // }
     getUserData(widget.uid);
     print('Info of Data : ' + data.toString());
-    if(index==0){
+    if (index == 0) {
       print(data['id']);
       return bodySection();
-    }else{
+    } else {
       return const ParentProfile();
     }
   }
@@ -62,13 +76,13 @@ class MyHomeScreen extends State<HomeScreen>{
     List<dynamic> childIds = [];
     return StreamBuilder<DocumentSnapshot>(
         stream: FirebaseFirestore.instance
-        .collection('parent_profiles')
-        .doc(widget.uid)
-        .snapshots(),
+            .collection('parent_profiles')
+            .doc(widget.uid)
+            .snapshots(),
         builder: (context, snapshot) {
-        if (snapshot.hasData && snapshot.data != null) {
-          childIds = snapshot.data?['childIds'];
-        }
+          if (snapshot.hasData && snapshot.data != null) {
+            childIds = snapshot.data?['childIds'];
+          }
           return ListView.builder(
               itemCount: childIds.length,
               itemBuilder: (context, index) {
@@ -82,19 +96,20 @@ class MyHomeScreen extends State<HomeScreen>{
                       if (snapshot.hasData && snapshot.data != null) {
                         childName = snapshot.data?['Name'];
                         childAge = snapshot.data?['DOB'];
-                        print("Name : " + childName.toString() + " Age : " + childAge.toString());
+                        print("Name : " +
+                            childName.toString() +
+                            " Age : " +
+                            childAge.toString());
                       }
                       return ChildCard(
-                          name: childName,
-                          age: childAge
+                        name: childName,
+                        age: childAge,
+                        childId: childId,
                       );
-                    }
-                );
-              }
-          );
-        }
-      );
-    }
+                    });
+              });
+        });
+  }
 
   Widget buildNavigationBar() {
     return GNav(
@@ -110,7 +125,7 @@ class MyHomeScreen extends State<HomeScreen>{
           curve: Curves.easeOut,
           iconColor: Colors.black,
           iconActiveColor: Colors.indigo,
-          onPressed: (){
+          onPressed: () {
             setState(() {
               getParticularSection(_selectedIndex);
             });
@@ -122,7 +137,7 @@ class MyHomeScreen extends State<HomeScreen>{
           curve: Curves.easeOut,
           iconColor: Colors.black,
           iconActiveColor: Colors.indigo,
-          onPressed: (){
+          onPressed: () {
             setState(() {
               getParticularSection(_selectedIndex);
             });
@@ -146,7 +161,8 @@ class MyHomeScreen extends State<HomeScreen>{
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           setState(() {
-            Navigator.push(context, MaterialPageRoute(builder: (context)=>const ChildPage()));
+            Navigator.push(context,
+                MaterialPageRoute(builder: (context) => const ChildPage()));
           });
         },
         child: const Icon(Icons.add),
