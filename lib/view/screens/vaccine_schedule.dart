@@ -43,7 +43,6 @@ class MyVaccineScheduleScreen extends State<VaccineScheduleScreen>{
       onTabChange: (index) {
         setState(() {
           _selectedIndex = index;
-          print(_selectedIndex);
         });
       },
     );
@@ -66,7 +65,7 @@ class MyVaccineScheduleScreen extends State<VaccineScheduleScreen>{
                   return VaccineCard(
                       name: documentSnapshot['name'],
                       info: documentSnapshot['info'],
-                      vacc_for: documentSnapshot['usedFor'],
+                      vaccFor: documentSnapshot['usedFor'],
                       duration: documentSnapshot['duration'],
                       dose: documentSnapshot['dose'],
                       sr: documentSnapshot['sr']);
