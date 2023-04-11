@@ -5,7 +5,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 class VaccineCard extends StatefulWidget {
   final String name;
   final String info;
-  final String vacc_for;
+  final String vaccFor;
   final String duration;
   final String dose;
   final String sr;
@@ -17,7 +17,7 @@ class VaccineCard extends StatefulWidget {
     Key? key,
     required this.name,
     required this.info,
-    required this.vacc_for,
+    required this.vaccFor,
     required this.duration,
     required this.dose,
     required this.sr,
@@ -54,14 +54,14 @@ class _VaccineCardState extends State<VaccineCard> {
 
   Color getBackgroundColor() {
     return widget.isActive
-        ? Color.fromARGB(255, 144, 252, 148)
-        : Color.fromARGB(255, 201, 235, 255);
+        ? const Color.fromARGB(255, 144, 252, 148)
+        : const Color.fromARGB(255, 254, 239, 141);
   }
 
   Color getTextColor() {
     return widget.isActive
-        ? Color.fromARGB(255, 1, 58, 5)
-        : Color.fromARGB(255, 24, 23, 23);
+        ? const Color.fromARGB(255, 1, 58, 5)
+        : const Color.fromARGB(255, 24, 23, 23);
   }
 
   bool get isLocked =>
@@ -74,7 +74,7 @@ class _VaccineCardState extends State<VaccineCard> {
   @override
   Widget build(BuildContext context) {
     print("sr no and locked status " +
-        this.isLocked.toString() +
+        isLocked.toString() +
         " " +
         widget.sr);
 
@@ -86,7 +86,7 @@ class _VaccineCardState extends State<VaccineCard> {
               MaterialPageRoute(
                 builder: (context) => VaccineInfo(
                   name: widget.name,
-                  vaccFor: widget.vacc_for,
+                  vaccFor: widget.vaccFor,
                   duration: getDuration(widget.duration),
                   dose: widget.dose,
                   info: widget.info,
@@ -101,18 +101,12 @@ class _VaccineCardState extends State<VaccineCard> {
             borderRadius: BorderRadius.circular(20),
           ),
           color: isLocked
-              ? Color.fromARGB(244, 234, 233, 235)
+              ? const Color.fromARGB(244, 234, 233, 235)
               : getBackgroundColor(),
           child: Stack(
               alignment: AlignmentDirectional.topStart,
               fit: StackFit.passthrough,
               children: <Widget>[
-                // Image.asset(
-                //   "assets/images/asset_2.png",
-                //   height: MediaQuery.of(context).size.height * 0.10,
-                //   width: MediaQuery.of(context).size.width,
-                //   fit: BoxFit.cover,
-                // ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [

@@ -91,10 +91,10 @@ class MyVaccineScheduleScreen extends State<VaccineScheduleScreen> {
                   return VaccineCard(
                       name: documentSnapshot['name'],
                       info: documentSnapshot['info'],
-                      vacc_for: documentSnapshot['usedFor'],
+                      vaccFor: documentSnapshot['usedFor'],
                       duration: documentSnapshot['duration'],
                       dose: documentSnapshot['dose'],
-                      lastVaccineSerialNumber: this.trackNo as int,
+                      lastVaccineSerialNumber: trackNo as int,
                       childId: widget.childId,
                       sr: documentSnapshot['sr']);
                 });
