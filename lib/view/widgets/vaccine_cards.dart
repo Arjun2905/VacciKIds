@@ -1,6 +1,10 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:vacci_kids/view/screens/vaccine_info.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+
+import 'package:shared_preferences/shared_preferences.dart';
 
 class VaccineCard extends StatefulWidget {
   final String name;
@@ -12,6 +16,7 @@ class VaccineCard extends StatefulWidget {
   final int lastVaccineSerialNumber;
   final String childId;
   bool isActive;
+  String curDuration = "200";
 
   VaccineCard({
     Key? key,
@@ -31,6 +36,14 @@ class VaccineCard extends StatefulWidget {
 }
 
 class _VaccineCardState extends State<VaccineCard> {
+  bool _disposed = false; // Add this boolean flag
+
+  @override
+  void dispose() {
+    _disposed = true; // Update the flag when the widget is disposed
+    super.dispose();
+  }
+
   String getName(String name) {
     if (name.length > 6) {
       return name.substring(0, 6) + '...';
@@ -64,20 +77,39 @@ class _VaccineCardState extends State<VaccineCard> {
         : Color.fromARGB(255, 24, 23, 23);
   }
 
+  String _activeDuration = "";
+
+  void readDataFromSharedPreferences() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    if (!_disposed) {
+      var myData = prefs.getStringList('vaccineList') ?? [];
+
+      var reqInfoJson = myData[widget.lastVaccineSerialNumber + 1 - 1];
+      var firstVaccine = jsonDecode(reqInfoJson);
+
+      print("DUR " + firstVaccine["duration"]);
+      setState(() {
+        _activeDuration = firstVaccine["duration"];
+      });
+    }
+    // widget.curDuration = vaccine["duration"];
+  }
+
   bool get isLocked =>
-      int.parse(widget.sr) > widget.lastVaccineSerialNumber + 1 ||
+      widget.duration != _activeDuration ||
       int.parse(widget.sr) <= widget.lastVaccineSerialNumber;
+  // widget.duration != widget.curDuration;
 
   bool get shouldBeActive =>
       int.parse(widget.sr) <= widget.lastVaccineSerialNumber;
 
   @override
   Widget build(BuildContext context) {
-    print("sr no and locked status " +
-        this.isLocked.toString() +
-        " " +
-        widget.sr);
-
+    // print("sr no and locked status " +
+    //     this.isLocked.toString() +
+    //     " " +
+    //     widget.sr);
+    readDataFromSharedPreferences();
     return GestureDetector(
         onTap: () {
           setState(() {
@@ -121,6 +153,8 @@ class _VaccineCardState extends State<VaccineCard> {
                       onChanged: isLocked
                           ? null
                           : (value) async {
+                              // print(getDurationFromLocalStorage());
+
                               setState(() {
                                 print(widget.isActive.toString() +
                                     value.toString());

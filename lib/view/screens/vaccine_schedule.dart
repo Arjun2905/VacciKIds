@@ -1,8 +1,12 @@
+import 'dart:convert';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
 import 'package:vacci_kids/view/widgets/vaccine_cards.dart';
 import 'package:vacci_kids/view/screens/parent_profile.dart';
+
+import 'package:shared_preferences/shared_preferences.dart';
 
 class VaccineScheduleScreen extends StatefulWidget {
   final String childId;
@@ -83,6 +87,14 @@ class MyVaccineScheduleScreen extends State<VaccineScheduleScreen> {
               child: CircularProgressIndicator(),
             );
           } else {
+            var data = snapshot.data!.docs
+                .map((doc) => jsonEncode(doc.data()))
+                .toList();
+            // print("DATA " + data.toString());
+            SharedPreferences.getInstance().then((prefs) {
+              prefs.setStringList('vaccineList', data);
+            });
+
             return ListView.builder(
                 itemCount: snapshot.data!.docs.length,
                 itemBuilder: (context, index) {
