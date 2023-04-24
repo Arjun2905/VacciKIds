@@ -1,9 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:vacci_kids/view/screens/vaccine_schedule.dart';
-<<<<<<< HEAD
-=======
-import 'package:intl/intl.dart';
->>>>>>> 435dc1ec0b54acc2ccf1b7bdee9dba68503f6966
 
 class ChildCard extends StatefulWidget {
   final String childId;
@@ -19,7 +15,7 @@ class ChildCard extends StatefulWidget {
 class MyCard extends State<ChildCard> {
   @override
   Widget build(BuildContext context) {
-    String age = calculateAge(widget.age.toString());
+    String age = calculateAge(widget.age.toString()) as String;
     return GestureDetector(
       onTap: () {
         setState(() {
@@ -55,15 +51,6 @@ class MyCard extends State<ChildCard> {
                   child: Column(
                       mainAxisAlignment: MainAxisAlignment.spaceAround,
                       children: [
-<<<<<<< HEAD
-                        SizedBox(height: MediaQuery.of(context).size.height*0.15,),
-                        Text(widget.name.toString(), style: const TextStyle(color: Colors.indigoAccent),),
-                        Text(age, style: const TextStyle(color: Colors.indigoAccent),),
-                      ]
-                  ),
-                ), padding: const EdgeInsets.only(right: 10.0)
-            ),
-=======
                         SizedBox(
                           height: MediaQuery.of(context).size.height * 0.15,
                         ),
@@ -78,7 +65,6 @@ class MyCard extends State<ChildCard> {
                       ]),
                 ),
                 padding: const EdgeInsets.only(right: 10.0)),
->>>>>>> 435dc1ec0b54acc2ccf1b7bdee9dba68503f6966
           ],
         ),
       ),
@@ -86,21 +72,31 @@ class MyCard extends State<ChildCard> {
   }
 }
 
-String calculateAge(String dateString) {
-  DateTime birthDate = DateTime.parse(dateString.split('-').reversed.join('-'));
-  print(birthDate);
+Object calculateAge(String dateString)  {
+
   DateTime currentDate = DateTime.now();
-  int days = currentDate.difference(birthDate).inDays;
-  int months = (currentDate.year - birthDate.year) * 12 +
-      currentDate.month -
-      birthDate.month;
-  int years = currentDate.year - birthDate.year;
-  String age = '$days D, $months M, $years Y';
-  if (years == 0) {
-    age = "$days D, $months M";
+
+  late int indexOfFirstHyphen, indexOfSecondHyphen, i;
+  for(i=0; i<dateString.length; i++) {
+    if(dateString[i] == "-") {
+      indexOfFirstHyphen = i;
+      break;
+    }
   }
-  if (months == 0 && years == 0) {
-    age = "$days D";
+  for(i=indexOfFirstHyphen+1; i<dateString.length; i++) {
+    if(dateString[i]=="-") {
+      indexOfSecondHyphen = i;
+    }
   }
-  return age;
+  int days = currentDate.day - int.parse(dateString.substring(0,indexOfFirstHyphen));
+  int months = currentDate.month - int.parse(dateString.substring(indexOfFirstHyphen+1, indexOfSecondHyphen));
+  int years = currentDate.year - int.parse(dateString.substring(indexOfSecondHyphen+1, i));
+
+  if(months==0 && years==0) {
+    return days.toString() +  " D";
+  }
+  if(years == 0) {
+    return months.toString() + " M";
+  }
+  return years.toString() + " Y";
 }
